@@ -38,4 +38,14 @@ public class Log4j1Properties {
 		}
 		return appenders.get(name);
 	}
+
+	@Override
+	public String toString() {
+		return "Log4j1Properties:"
+				+ "\n  rootLogger: " + rootLogger
+				+ "\n  loggers: " + loggers
+				+ "\n  appenders: " + appenders
+				+ "\n  comments: " + comments
+				+ "\n  errors: " + errors;
+	}
 }

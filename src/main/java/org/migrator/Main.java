@@ -23,7 +23,7 @@ public class Main {
 		List<String> lines = Util.readLines(inputPath);
 
 		Log4j1Properties log4j1Props = PropsParser.parseLog4j1Properties(lines);
-		List<String> log4j2Props = PropsWriter.writeLog4j2Properties(log4j1Props);
+		List<String> log4j2Props = PropsWriter.writeLog4j2Properties(log4j1Props, lines);
 
 		Util.writeLines(log4j2Props, outputPath);
 	}

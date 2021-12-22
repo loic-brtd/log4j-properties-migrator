@@ -10,11 +10,6 @@ public class NumberedValue {
 		this.lineNumber = lineNumber;
 	}
 
-	@Override
-	public String toString() {
-		return "[" + lineNumber + "] " + value;
-	}
-
 	public String getValue() {
 		return value;
 	}
@@ -22,4 +17,10 @@ public class NumberedValue {
 	public int getLineNumber() {
 		return lineNumber;
 	}
+
+	@Override
+	public String toString() {
+		return "(" + lineNumber + ": " + value + ")";
+	}
+
 }

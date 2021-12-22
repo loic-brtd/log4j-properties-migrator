@@ -73,7 +73,7 @@ public class PropsParser {
 					Log4j1Appender appender = properties.getOrCreateAppender(appenderName, lineNumber);
 
 					if (lowerCaseAttribute.equals("")) {
-						appender.classType = new NumberedValue(value, lineNumber);
+						appender.typeClass = new NumberedValue(value, lineNumber);
 					} else if (lowerCaseAttribute.equals("layout")) {
 						appender.layout = new NumberedValue(value, lineNumber);
 					} else if (lowerCaseAttribute.equals("layout.conversionpattern")) {
@@ -90,6 +90,8 @@ public class PropsParser {
 						appender.threshold = new NumberedValue(value, lineNumber);
 					} else if (lowerCaseAttribute.equals("append")) {
 						appender.append = new NumberedValue(value, lineNumber);
+					} else if (lowerCaseAttribute.equals("target")) {
+						appender.target = new NumberedValue(value, lineNumber);
 					} else {
 						handleParseError("Unknown property", line, lineNumber, properties);
 					}
@@ -116,7 +118,7 @@ public class PropsParser {
 	 */
 	private static void handleParseError(String message, String line, int lineNumber, Log4j1Properties properties) {
 		System.err.println(message + " at line " + lineNumber + " : " + line);
-		properties.errors.add(new NumberedValue("# [Migrator parse error: " + message + "] " + line, lineNumber));
+		properties.errors.add(new NumberedValue("# [MigratorError: " + message + "] " + line, lineNumber));
 	}
 
 }
