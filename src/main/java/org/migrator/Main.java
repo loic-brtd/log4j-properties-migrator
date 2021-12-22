@@ -19,7 +19,6 @@ public class Main {
 
 		Path inputPath = new File(args[0]).toPath();
 		Path outputPath = new File(args[1]).toPath();
-//		Path inputPath = Paths.get(ClassLoader.getSystemResource("log4j.properties").toURI());
 
 		List<String> lines = Util.readLines(inputPath);
 
