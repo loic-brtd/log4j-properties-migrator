@@ -18,7 +18,14 @@ public class PropsWriter {
 
 	private static final String PATTERN_LAYOUT = "org.apache.log4j.PatternLayout";
 
-	public static List<String> writeLog4j2Properties(Log4j1Properties properties) throws Exception {
+	/**
+	 * Transforms a Log41 properties object into a Log4j2 properties file. Orders the output lines so that they appear in the same order as
+	 * their related lines in the original properties file.
+	 * 
+	 * @param properties Log4j1 properties object
+	 * @return Lines of the Log4j2 properties file
+	 */
+	public static List<String> writeLog4j2Properties(Log4j1Properties properties) {
 		List<NumberedValue> output = new ArrayList<>();
 
 		// Root logger

@@ -9,7 +9,14 @@ import org.migrator.model.NumberedValue;
 
 public class PropsParser {
 
-	public static Log4j1Properties parseLog4j1Properties(List<String> lines) throws Exception {
+	/**
+	 * Parse a Log4j1 properties file, collecting information about the rootLogger, loggers and appenders. This retains the line numbers of
+	 * the original file as well as the empty and commented lines. Parse errors are printed to stderr and collected in the output object.
+	 * 
+	 * @param lines Lines of the properties file as a list of String
+	 * @return Object representing the content of the input properties file
+	 */
+	public static Log4j1Properties parseLog4j1Properties(List<String> lines) {
 		Log4j1Properties properties = new Log4j1Properties();
 		int lineNumber = 1;
 
@@ -104,6 +111,9 @@ public class PropsParser {
 		return properties;
 	}
 
+	/*
+	 * Print error message to stderr and collect error into the properties object, with its line number.
+	 */
 	private static void handleParseError(String message, String line, int lineNumber, Log4j1Properties properties) {
 		System.err.println(message + " at line " + lineNumber + " : " + line);
 		properties.errors.add(new NumberedValue("# [Migrator parse error: " + message + "] " + line, lineNumber));
