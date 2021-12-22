@@ -1,6 +1,5 @@
 package org.migrator.core;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.migrator.model.Log4j1Appender;
@@ -12,14 +11,13 @@ public class PropsParser {
 
 	public static Log4j1Properties parseLog4j1Properties(List<String> lines) throws Exception {
 		Log4j1Properties properties = new Log4j1Properties();
-		List<NumberedValue> comments = new ArrayList<>();
 		int lineNumber = 1;
 
 		for (String line : lines) {
 			line = line.trim();
 
 			if (Util.isEmptyOrComment(line)) {
-				comments.add(new NumberedValue(line, lineNumber));
+				properties.comments.add(new NumberedValue(line, lineNumber));
 
 			} else {
 				if (!line.contains("=")) {
@@ -40,8 +38,6 @@ public class PropsParser {
 					for (int i = 1; i < listOfValues.length; i++) {
 						properties.rootLogger.appenderNames.add(new NumberedValue(listOfValues[i], lineNumber));
 					}
-					properties.rootLogger.comments.addAll(comments);
-					comments.clear();
 
 				} else if (key.startsWith("log4j.logger.")) {
 					String loggerName = key.substring("log4j.logger.".length());
@@ -55,8 +51,6 @@ public class PropsParser {
 					for (int i = 1; i < listOfValues.length; i++) {
 						logger.appenderNames.add(new NumberedValue(listOfValues[i], lineNumber));
 					}
-					logger.comments.addAll(comments);
-					comments.clear();
 
 				} else if (key.startsWith("log4j.appender.")) {
 					// Exemple key : "log4j.appender.asip.layout.ConversionPattern"
@@ -88,8 +82,6 @@ public class PropsParser {
 					} else {
 						System.err.println("Unknown property at line " + lineNumber + " : " + line);
 					}
-					appender.comments.addAll(comments);
-					comments.clear();
 
 				} else if (key.startsWith("log4j.additivity.")) {
 					String loggerName = key.substring("log4j.additivity.".length());
@@ -104,9 +96,6 @@ public class PropsParser {
 
 			lineNumber++;
 		}
-
-		properties.lastComments.addAll(comments);
-		comments.clear();
 
 		return properties;
 	}

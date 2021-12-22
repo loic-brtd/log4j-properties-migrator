@@ -23,10 +23,6 @@ public class PropsWriter {
 
 		// Root logger
 		Log4j1RootLogger rootLogger = properties.rootLogger;
-		for (NumberedValue comment : rootLogger.comments) {
-			output.add(comment);
-		}
-
 		output.add(new NumberedValue("rootLogger.level = " + rootLogger.level.value, rootLogger.level.lineNumber));
 		for (NumberedValue appenderName : properties.rootLogger.appenderNames) {
 			output.add(new NumberedValue("rootLogger.appenderRef." + nameToProp(appenderName.value) + ".ref = " + appenderName.value,
@@ -35,10 +31,6 @@ public class PropsWriter {
 
 		// Other loggers
 		properties.getLoggers().forEach((loggerName, logger) -> {
-			for (NumberedValue comment : logger.comments) {
-				output.add(comment);
-			}
-
 			String loggerProp = nameToProp(loggerName);
 			String loggerPrefix = "logger." + loggerProp;
 
@@ -56,10 +48,6 @@ public class PropsWriter {
 
 		// Appender
 		properties.getAppenders().forEach((appenderName, appender) -> {
-			for (NumberedValue comment : appender.comments) {
-				output.add(comment);
-			}
-
 			String appenderProp = nameToProp(appenderName);
 			String appenderPrefix = "appender." + appenderProp;
 			String appenderType = convertAppenderType(appender.classType.value);
@@ -135,8 +123,8 @@ public class PropsWriter {
 			}
 		});
 
-		// Last comments
-		for (NumberedValue comment : properties.lastComments) {
+		// Comments
+		for (NumberedValue comment : properties.comments) {
 			output.add(comment);
 		}
 

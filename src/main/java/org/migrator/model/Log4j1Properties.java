@@ -10,7 +10,7 @@ public class Log4j1Properties {
 	public Log4j1RootLogger rootLogger = new Log4j1RootLogger();
 	private Map<String, Log4j1Logger> loggers = new LinkedHashMap<>();
 	private Map<String, Log4j1Appender> appenders = new LinkedHashMap<>();
-	public List<NumberedValue> lastComments = new ArrayList<>();
+	public List<NumberedValue> comments = new ArrayList<>();
 
 	public Map<String, Log4j1Logger> getLoggers() {
 		return loggers;
