@@ -92,6 +92,8 @@ public class PropsParser {
 						appender.append = new NumberedValue(value, lineNumber);
 					} else if (lowerCaseAttribute.equals("target")) {
 						appender.target = new NumberedValue(value, lineNumber);
+					} else if (lowerCaseAttribute.equals("encoding")) {
+						appender.encoding = new NumberedValue(value, lineNumber);
 					} else {
 						handleParseError("Unknown property", line, lineNumber, properties);
 					}

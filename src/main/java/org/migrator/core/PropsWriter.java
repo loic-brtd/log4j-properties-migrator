@@ -98,6 +98,11 @@ public class PropsWriter {
 				output.add(new NumberedValue(appenderPrefix + ".append = " + appender.append.value, appender.append.lineNumber));
 			}
 
+			// Encoding
+			if (appender.encoding != null) {
+				output.add(new NumberedValue(appenderPrefix + ".encoding = " + appender.encoding.value, appender.encoding.lineNumber));
+			}
+
 			// Layout
 			if (appender.layout != null) {
 				String appenderLayoutType = convertAppenderLayoutType(appender.layout.value, appender.layout.lineNumber);
@@ -153,22 +158,22 @@ public class PropsWriter {
 
 	private static String convertAppenderLayoutType(String layout, int lineNumber) {
 		if (layout == null) {
-			System.err.println("Missing layout at line " + lineNumber);
-			return "[Missing layout]";
+			System.err.println("Missing layout type at line " + lineNumber);
+			return "[Missing layout type]";
 		}
 		switch (layout) {
 		case PATTERN_LAYOUT:
 			return "PatternLayout";
 		default:
-			System.err.println("Unknown layout at line " + lineNumber + ": " + layout);
-			return "[Unknown layout: " + layout + "]";
+			System.err.println("Unknown layout type at line " + lineNumber + ": " + layout);
+			return "[Unknown layout type: " + layout + "]";
 		}
 	}
 
 	private static String convertAppenderType(String classType, int lineNumber) {
 		if (classType == null) {
 			System.err.println("Missing appender type at line " + lineNumber);
-			return "[Missing type]";
+			return "[Missing appender type]";
 		}
 		switch (classType) {
 		case CONSOLE_APPENDER:
@@ -181,7 +186,7 @@ public class PropsWriter {
 			return "File";
 		default:
 			System.err.println("Unknown appender type at line " + lineNumber + ": " + classType);
-			return "[Unknown type: " + classType + "]";
+			return "[Unknown appender type: " + classType + "]";
 		}
 	}
 

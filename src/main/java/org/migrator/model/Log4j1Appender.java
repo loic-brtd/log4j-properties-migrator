@@ -12,6 +12,7 @@ public class Log4j1Appender extends Log4j1Element {
 	public NumberedValue datePattern;
 	public NumberedValue append;
 	public NumberedValue target;
+	public NumberedValue encoding;
 
 	@Override
 	public String toString() {
@@ -26,7 +27,8 @@ public class Log4j1Appender extends Log4j1Element {
 				+ "\n  threshold: " + threshold
 				+ "\n  datePattern: " + datePattern
 				+ "\n  append: " + append
-				+ "\n  target: " + target;
+				+ "\n  target: " + target
+				+ "\n  encoding: " + encoding;
 	}
 
 }
