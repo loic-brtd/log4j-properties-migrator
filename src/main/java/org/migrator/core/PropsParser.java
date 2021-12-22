@@ -21,7 +21,7 @@ public class PropsParser {
 
 			} else {
 				if (!line.contains("=")) {
-					System.err.println("Property doesn't have '=' sign at line " + lineNumber + " : " + line);
+					handleParseError("Property doesn't have '=' sign", line, lineNumber, properties);
 					continue;
 				}
 
@@ -31,7 +31,8 @@ public class PropsParser {
 
 				if (key.equals("log4j.rootLogger")) {
 					String[] listOfValues = Util.splitCSV(value, line, lineNumber);
-					if (listOfValues == null) {
+					if (listOfValues.length < 1) {
+						handleParseError("Empty list of values", line, lineNumber, properties);
 						continue;
 					}
 					properties.rootLogger.level = new NumberedValue(listOfValues[0], lineNumber);
@@ -44,7 +45,8 @@ public class PropsParser {
 					Log4j1Logger logger = properties.getOrCreateLogger(loggerName, lineNumber);
 
 					String[] listOfValues = Util.splitCSV(value, line, lineNumber);
-					if (listOfValues == null) {
+					if (listOfValues.length < 1) {
+						handleParseError("Empty list of values", line, lineNumber, properties);
 						continue;
 					}
 					logger.level = new NumberedValue(listOfValues[0], lineNumber);
@@ -79,8 +81,10 @@ public class PropsParser {
 						appender.maxBackupIndex = new NumberedValue(value, lineNumber);
 					} else if (lowerCaseAttribute.equals("threshold")) {
 						appender.threshold = new NumberedValue(value, lineNumber);
+					} else if (lowerCaseAttribute.equals("append")) {
+						appender.append = new NumberedValue(value, lineNumber);
 					} else {
-						System.err.println("Unknown property at line " + lineNumber + " : " + line);
+						handleParseError("Unknown property", line, lineNumber, properties);
 					}
 
 				} else if (key.startsWith("log4j.additivity.")) {
@@ -89,7 +93,7 @@ public class PropsParser {
 					logger.additivity = new NumberedValue(value, lineNumber);
 
 				} else {
-					System.err.println("Unknown property at line " + lineNumber + " : " + line);
+					handleParseError("Unknown property", line, lineNumber, properties);
 				}
 
 			}
@@ -98,6 +102,11 @@ public class PropsParser {
 		}
 
 		return properties;
+	}
+
+	private static void handleParseError(String message, String line, int lineNumber, Log4j1Properties properties) {
+		System.err.println(message + " at line " + lineNumber + " : " + line);
+		properties.errors.add(new NumberedValue("# [Migrator parse error: " + message + "] " + line, lineNumber));
 	}
 
 }

@@ -15,12 +15,7 @@ public class Util {
 	}
 
 	public static String[] splitCSV(String csv, String line, int lineNumber) {
-		String[] listOfValues = csv.split("\\s*,\\s*");
-		if (listOfValues.length < 1) {
-			System.err.println("Empty list of values at line " + lineNumber + " : " + line);
-			return null;
-		}
-		return listOfValues;
+		return csv.split("\\s*,\\s*");
 	}
 
 	public static List<String> readLines(Path path) throws Exception {

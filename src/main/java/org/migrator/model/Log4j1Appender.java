@@ -10,4 +10,5 @@ public class Log4j1Appender extends Log4j1Element {
 	public NumberedValue maxBackupIndex;
 	public NumberedValue threshold;
 	public NumberedValue datePattern;
+	public NumberedValue append;
 }

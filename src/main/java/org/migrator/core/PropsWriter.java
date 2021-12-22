@@ -56,6 +56,11 @@ public class PropsWriter {
 			output.add(new NumberedValue(appenderPrefix + ".type = " + appenderType, appender.classType.lineNumber));
 			output.add(new NumberedValue(appenderPrefix + ".name = " + appenderName, appender.name.lineNumber));
 
+			// Append
+			if (appender.append != null) {
+				output.add(new NumberedValue(appenderPrefix + ".append = " + appender.append.value, appender.append.lineNumber));
+			}
+
 			// Info related to appender type
 			if (CONSOLE_APPENDER.equals(appender.classType.value)) {
 				// Nothing more
@@ -85,7 +90,6 @@ public class PropsWriter {
 
 			} else if (FILE_APPENDER.equals(appender.classType.value)) {
 				output.add(new NumberedValue(appenderPrefix + ".fileName = " + appender.file.value, appender.file.lineNumber));
-
 			}
 
 			// Layout
@@ -126,6 +130,11 @@ public class PropsWriter {
 		// Comments
 		for (NumberedValue comment : properties.comments) {
 			output.add(comment);
+		}
+
+		// Parsing errors
+		for (NumberedValue unknownValue : properties.errors) {
+			output.add(unknownValue);
 		}
 
 		return output.stream()

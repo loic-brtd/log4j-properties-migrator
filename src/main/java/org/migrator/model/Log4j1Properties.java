@@ -11,6 +11,7 @@ public class Log4j1Properties {
 	private Map<String, Log4j1Logger> loggers = new LinkedHashMap<>();
 	private Map<String, Log4j1Appender> appenders = new LinkedHashMap<>();
 	public List<NumberedValue> comments = new ArrayList<>();
+	public List<NumberedValue> errors = new ArrayList<>();
 
 	public Map<String, Log4j1Logger> getLoggers() {
 		return loggers;
