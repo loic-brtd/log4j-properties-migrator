@@ -12,26 +12,25 @@ public class PropsParser {
 	/**
 	 * Parse a Log4j1 properties file, collecting information about the rootLogger, loggers and appenders. This retains the line numbers of
 	 * the original file as well as the empty and commented lines. Parse errors are printed to stderr and collected in the output object.
-	 * 
+	 *
 	 * @param lines Lines of the properties file as a list of String
 	 * @return Object representing the content of the input properties file
 	 */
 	public static Log4j1Properties parseLog4j1Properties(List<String> lines) {
 		Log4j1Properties properties = new Log4j1Properties();
-		int lineNumber = 1;
 
+		int lineNumber = 0;
 		for (String line : lines) {
+			lineNumber++; // Starts at line 1
 			line = line.trim();
 
 			if (Util.isEmptyOrComment(line)) {
 				properties.comments.add(new NumberedValue(line, lineNumber));
 
-			} else {
-				if (!line.contains("=")) {
-					handleParseError("Property doesn't have '=' sign", line, lineNumber, properties);
-					continue;
-				}
+			} else if (!line.contains("=")) {
+				handleParseError("Property doesn't have '=' sign", line, lineNumber, properties);
 
+			} else {
 				int equalsIndex = line.indexOf("=");
 				String key = line.substring(0, equalsIndex).trim();
 				String value = line.substring(equalsIndex + 1).trim();
@@ -107,10 +106,7 @@ public class PropsParser {
 				} else {
 					handleParseError("Unknown property", line, lineNumber, properties);
 				}
-
 			}
-
-			lineNumber++;
 		}
 
 		return properties;

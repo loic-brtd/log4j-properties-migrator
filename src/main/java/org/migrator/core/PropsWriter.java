@@ -56,45 +56,53 @@ public class PropsWriter {
 			}
 		});
 
-		// Appender
+		// Appenders
 		properties.getAppenders().forEach((appenderName, appender) -> {
 			String appenderProp = nameToProp(appenderName);
 			String appenderPrefix = "appender." + appenderProp;
 
 			// Type
-			if (appender.typeClass != null) {
+			if (appender.typeClass == null) {
+				handleWriteError("Missing property 'type'", appender.name.lineNumber, properties, originalFile);
+
+			} else {
 				String appenderType = convertAppenderType(appender.typeClass.value, appender.typeClass.lineNumber);
-				output.add(new NumberedValue(appenderPrefix + ".type = " + appenderType, appender.typeClass.lineNumber));
 				output.add(new NumberedValue(appenderPrefix + ".name = " + appenderName, appender.name.lineNumber));
+				output.add(new NumberedValue(appenderPrefix + ".type = " + appenderType, appender.typeClass.lineNumber));
 
 				// Info related to appender type
-				if (ROLLING_FILE_APPENDER.equals(appender.typeClass.value)) {
-					if (appender.file != null) {
+				if (appender.typeClass.value.equals(ROLLING_FILE_APPENDER)) {
+					if (appender.file == null) {
+						handleWriteError("Missing property 'file'", appender.name.lineNumber, properties, originalFile);
+					} else {
 						output.add(new NumberedValue(appenderPrefix + ".fileName = " + appender.file.value, appender.file.lineNumber));
 						output.add(new NumberedValue(appenderPrefix + ".filePattern = " + appender.file.value + ".%i",
 								appender.file.lineNumber));
 					}
 
-				} else if (DAILY_ROLLING_FILE_APPENDER.equals(appender.typeClass.value)) {
-					output.add(new NumberedValue(appenderPrefix + ".fileName = " + appender.file.value, appender.file.lineNumber));
-					if (appender.datePattern == null) {
-						System.err.println("Appender named '" + appenderName + "' should have a datePattern");
+				} else if (appender.typeClass.value.equals(DAILY_ROLLING_FILE_APPENDER)) {
+					if (appender.file == null) {
+						handleWriteError("Missing property 'file'", appender.name.lineNumber, properties, originalFile);
+					} else if (appender.datePattern == null) {
+						handleWriteError("Missing property 'datePattern'", appender.name.lineNumber, properties, originalFile);
 					} else {
+						output.add(new NumberedValue(appenderPrefix + ".fileName = " + appender.file.value, appender.file.lineNumber));
 						String dateSuffix = ".%d{" + appender.datePattern.value.replaceAll("'\\.'", "") + "}";
 						output.add(new NumberedValue(appenderPrefix + ".filePattern = " + appender.file.value + dateSuffix,
 								appender.file.lineNumber));
+						output.add(new NumberedValue(appenderPrefix + ".policies.type = Policies", appender.datePattern.lineNumber));
+						output.add(new NumberedValue(appenderPrefix + ".policies.time.type = TimeBasedTriggeringPolicy",
+								appender.datePattern.lineNumber));
+						output.add(new NumberedValue(appenderPrefix + ".policies.time.interval = 1", appender.datePattern.lineNumber));
 					}
-					output.add(new NumberedValue(appenderPrefix + ".policies.type = Policies", appender.datePattern.lineNumber));
-					output.add(new NumberedValue(appenderPrefix + ".policies.time.type = TimeBasedTriggeringPolicy",
-							appender.datePattern.lineNumber));
-					output.add(new NumberedValue(appenderPrefix + ".policies.time.interval = 1", appender.datePattern.lineNumber));
 
-				} else if (FILE_APPENDER.equals(appender.typeClass.value)) {
-					output.add(new NumberedValue(appenderPrefix + ".fileName = " + appender.file.value, appender.file.lineNumber));
+				} else if (appender.typeClass.value.equals(FILE_APPENDER)) {
+					if (appender.file == null) {
+						handleWriteError("Missing property 'file'", appender.name.lineNumber, properties, originalFile);
+					} else {
+						output.add(new NumberedValue(appenderPrefix + ".fileName = " + appender.file.value, appender.file.lineNumber));
+					}
 				}
-
-			} else {
-				handleWriteError("Missing type for appender", appender.name.lineNumber, properties, originalFile);
 			}
 
 			// Append
@@ -111,7 +119,8 @@ public class PropsWriter {
 			if (appender.layout != null) {
 				String appenderLayoutType = convertAppenderLayoutType(appender.layout.value, appender.layout.lineNumber);
 				output.add(new NumberedValue(appenderPrefix + ".layout.type = " + appenderLayoutType, appender.layout.lineNumber));
-				if (PATTERN_LAYOUT.equals(appender.layout.value)) {
+
+				if (appender.layout.value.equals(PATTERN_LAYOUT)) {
 					if (appender.layoutConversionPattern != null) {
 						output.add(new NumberedValue(appenderPrefix + ".layout.pattern = " + appender.layoutConversionPattern.value,
 								appender.layoutConversionPattern.lineNumber));
@@ -121,7 +130,7 @@ public class PropsWriter {
 				}
 			}
 
-			// Policy and strategy
+			// Max file size
 			if (appender.maxFileSize != null) {
 				output.add(new NumberedValue(appenderPrefix + ".policies.type = Policies", appender.maxFileSize.lineNumber));
 				output.add(new NumberedValue(appenderPrefix + ".policies.size.type = SizeBasedTriggeringPolicy",
@@ -129,6 +138,8 @@ public class PropsWriter {
 				output.add(new NumberedValue(appenderPrefix + ".policies.size.size = " + appender.maxFileSize.value,
 						appender.maxFileSize.lineNumber));
 			}
+
+			// Max backup index
 			if (appender.maxBackupIndex != null) {
 				output.add(new NumberedValue(appenderPrefix + ".strategy.type = DefaultRolloverStrategy",
 						appender.maxBackupIndex.lineNumber));
@@ -145,14 +156,10 @@ public class PropsWriter {
 		});
 
 		// Comments
-		for (NumberedValue comment : properties.comments) {
-			output.add(comment);
-		}
+		output.addAll(properties.comments);
 
 		// Parsing errors
-		for (NumberedValue unknownValue : properties.errors) {
-			output.add(unknownValue);
-		}
+		output.addAll(properties.errors);
 
 		return output.stream()
 				.sorted(Comparator.comparingInt(NumberedValue::getLineNumber))
