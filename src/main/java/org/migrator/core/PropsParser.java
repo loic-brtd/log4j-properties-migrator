@@ -36,7 +36,8 @@ public class PropsParser {
 				String key = line.substring(0, equalsIndex).trim();
 				String value = line.substring(equalsIndex + 1).trim();
 
-				if (key.equals("log4j.rootLogger")) {
+				if (key.equals("log4j.rootLogger") || key.equals("log4j.rootCategory")) {
+					// "rootCategory" is a deprecated equivalent to "rootLogger" in Log4j1
 					String[] listOfValues = Util.splitCSV(value, line, lineNumber);
 					if (listOfValues.length < 1) {
 						handleParseError("Empty list of values", line, lineNumber, properties);

@@ -30,7 +30,9 @@ public class PropsWriter {
 
 		// Root logger
 		Log4j1RootLogger rootLogger = properties.rootLogger;
-		output.add(new NumberedValue("rootLogger.level = " + rootLogger.level.value, rootLogger.level.lineNumber));
+		if (rootLogger.level != null) {
+			output.add(new NumberedValue("rootLogger.level = " + rootLogger.level.value, rootLogger.level.lineNumber));
+		}
 		for (NumberedValue appenderName : properties.rootLogger.appenderNames) {
 			output.add(new NumberedValue("rootLogger.appenderRef." + nameToProp(appenderName.value) + ".ref = " + appenderName.value,
 					appenderName.lineNumber));
@@ -42,7 +44,9 @@ public class PropsWriter {
 			String loggerPrefix = "logger." + loggerProp;
 
 			output.add(new NumberedValue(loggerPrefix + ".name = " + logger.name.value, logger.name.lineNumber));
-			output.add(new NumberedValue(loggerPrefix + ".level = " + logger.level.value, logger.level.lineNumber));
+			if (logger.level != null) {
+				output.add(new NumberedValue(loggerPrefix + ".level = " + logger.level.value, logger.level.lineNumber));
+			}
 			if (logger.additivity != null) {
 				output.add(new NumberedValue(loggerPrefix + ".additivity = " + logger.additivity.value, logger.additivity.lineNumber));
 			}
@@ -108,8 +112,12 @@ public class PropsWriter {
 				String appenderLayoutType = convertAppenderLayoutType(appender.layout.value, appender.layout.lineNumber);
 				output.add(new NumberedValue(appenderPrefix + ".layout.type = " + appenderLayoutType, appender.layout.lineNumber));
 				if (PATTERN_LAYOUT.equals(appender.layout.value)) {
-					output.add(new NumberedValue(appenderPrefix + ".layout.pattern = " + appender.layoutConversionPattern.value,
-							appender.layoutConversionPattern.lineNumber));
+					if (appender.layoutConversionPattern != null) {
+						output.add(new NumberedValue(appenderPrefix + ".layout.pattern = " + appender.layoutConversionPattern.value,
+								appender.layoutConversionPattern.lineNumber));
+					} else {
+						handleWriteError("Missing layout pattern for appender", appender.name.lineNumber, properties, originalFile);
+					}
 				}
 			}
 
