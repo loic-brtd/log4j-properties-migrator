@@ -62,7 +62,7 @@ public class PropsParser {
 					}
 
 				} else if (key.startsWith("log4j.appender.")) {
-					// Exemple key : "log4j.appender.asip.layout.ConversionPattern"
+					// Example key : "log4j.appender.asip.layout.ConversionPattern"
 					String restOfKey = key.substring("log4j.appender.".length()); // "asip.layout.ConversionPattern"
 					String appenderName = restOfKey.contains(".")
 							? restOfKey.substring(0, restOfKey.indexOf("."))

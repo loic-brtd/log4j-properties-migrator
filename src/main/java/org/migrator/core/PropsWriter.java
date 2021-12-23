@@ -21,7 +21,7 @@ public class PropsWriter {
 	/**
 	 * Transforms a Log41 properties object into a Log4j2 properties file. Orders the output lines so that they appear in the same order as
 	 * their related lines in the original properties file.
-	 * 
+	 *
 	 * @param properties Log4j1 properties object
 	 * @return Lines of the Log4j2 properties file
 	 */
@@ -34,14 +34,13 @@ public class PropsWriter {
 			output.add(new NumberedValue("rootLogger.level = " + rootLogger.level.value, rootLogger.level.lineNumber));
 		}
 		for (NumberedValue appenderName : properties.rootLogger.appenderNames) {
-			output.add(new NumberedValue("rootLogger.appenderRef." + nameToProp(appenderName.value) + ".ref = " + appenderName.value,
-					appenderName.lineNumber));
+			output.add(new NumberedValue("rootLogger.appenderRef." + nameToIdf(appenderName.value) + ".ref = "
+					+ appenderName.value, appenderName.lineNumber));
 		}
 
 		// Other loggers
 		properties.getLoggers().forEach((loggerName, logger) -> {
-			String loggerProp = nameToProp(loggerName);
-			String loggerPrefix = "logger." + loggerProp;
+			String loggerPrefix = "logger." + nameToIdf(loggerName);
 
 			output.add(new NumberedValue(loggerPrefix + ".name = " + logger.name.value, logger.name.lineNumber));
 			if (logger.level != null) {
@@ -51,15 +50,14 @@ public class PropsWriter {
 				output.add(new NumberedValue(loggerPrefix + ".additivity = " + logger.additivity.value, logger.additivity.lineNumber));
 			}
 			for (NumberedValue appenderName : logger.appenderNames) {
-				output.add(new NumberedValue(loggerPrefix + ".appenderRef." + nameToProp(appenderName.value)
+				output.add(new NumberedValue(loggerPrefix + ".appenderRef." + nameToIdf(appenderName.value)
 						+ ".ref = " + appenderName.value, appenderName.lineNumber));
 			}
 		});
 
 		// Appenders
 		properties.getAppenders().forEach((appenderName, appender) -> {
-			String appenderProp = nameToProp(appenderName);
-			String appenderPrefix = "appender." + appenderProp;
+			String appenderPrefix = "appender." + nameToIdf(appenderName);
 
 			// Type
 			if (appender.typeClass == null) {
@@ -67,8 +65,8 @@ public class PropsWriter {
 
 			} else {
 				String appenderType = convertAppenderType(appender.typeClass.value, appender.typeClass.lineNumber);
-				output.add(new NumberedValue(appenderPrefix + ".name = " + appenderName, appender.name.lineNumber));
 				output.add(new NumberedValue(appenderPrefix + ".type = " + appenderType, appender.typeClass.lineNumber));
+				output.add(new NumberedValue(appenderPrefix + ".name = " + appenderName, appender.name.lineNumber));
 
 				// Info related to appender type
 				if (appender.typeClass.value.equals(ROLLING_FILE_APPENDER)) {
@@ -87,7 +85,7 @@ public class PropsWriter {
 						handleWriteError("Missing property 'datePattern'", appender.name.lineNumber, properties, originalFile);
 					} else {
 						output.add(new NumberedValue(appenderPrefix + ".fileName = " + appender.file.value, appender.file.lineNumber));
-						String dateSuffix = ".%d{" + appender.datePattern.value.replaceAll("'\\.'", "") + "}";
+						String dateSuffix = ".%d{" + appender.datePattern.value.replace("'.'", "") + "}";
 						output.add(new NumberedValue(appenderPrefix + ".filePattern = " + appender.file.value + dateSuffix,
 								appender.file.lineNumber));
 						output.add(new NumberedValue(appenderPrefix + ".policies.type = Policies", appender.datePattern.lineNumber));
@@ -167,8 +165,16 @@ public class PropsWriter {
 				.collect(Collectors.toList());
 	}
 
-	private static String nameToProp(String name) {
-		return name.replaceAll("\\.", "_").toLowerCase();
+	/**
+	 * Convert an appender/logger name to a valid identifier. This identifier is only used inside the
+	 * properties file to identify which appender/logger the properties are related to.
+	 *
+	 * @param name Name of an appender/logger (logger names are used inside the calls to Logger.getLogger(loggerName))
+	 * @return Identifier for the appender/logger (used in properties like "logger.loggerIdentifier.level = ..."
+	 * or "appender.appenderIdentifier.type = ...")
+	 */
+	private static String nameToIdf(String name) {
+		return name.replace(".", "_").toLowerCase();
 	}
 
 	private static String convertAppenderLayoutType(String layout, int lineNumber) {
@@ -194,7 +200,6 @@ public class PropsWriter {
 		case CONSOLE_APPENDER:
 			return "Console";
 		case ROLLING_FILE_APPENDER:
-			return "RollingFile";
 		case DAILY_ROLLING_FILE_APPENDER:
 			return "RollingFile";
 		case FILE_APPENDER:
