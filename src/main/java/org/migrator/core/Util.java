@@ -1,5 +1,6 @@
 package org.migrator.core;
 
+import javax.annotation.Nonnull;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -10,11 +11,17 @@ import java.util.stream.Collectors;
 
 public class Util {
 
-	public static boolean isEmptyOrComment(String line) {
+	public static final String ERROR_NAME = "MigrationError";
+
+	public static boolean isEmptyOrComment(@Nonnull String line) {
+		line = line.trim();
 		return line.isEmpty() || line.charAt(0) == '#' || line.charAt(0) == '!';
 	}
 
-	public static String[] splitCSV(String csv, String line, int lineNumber) {
+	public static String[] splitCSV(@Nonnull String csv) {
+		if (csv.trim().isEmpty()) {
+			return new String[0];
+		}
 		return csv.split("\\s*,\\s*");
 	}
 
@@ -39,6 +46,10 @@ public class Util {
 		}
 
 		fw.close();
+	}
+
+	public static void logError(String message, int lineNumber) {
+		System.err.printf("[%s:%2d] %s%n", ERROR_NAME, lineNumber, message);
 	}
 
 }

@@ -1,5 +1,6 @@
 package org.migrator.model;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -7,34 +8,32 @@ import java.util.Map;
 
 public class Log4j1Properties {
 
-	public Log4j1RootLogger rootLogger = new Log4j1RootLogger();
-	private Map<String, Log4j1Logger> loggers = new LinkedHashMap<>();
-	private Map<String, Log4j1Appender> appenders = new LinkedHashMap<>();
-	public List<NumberedValue> comments = new ArrayList<>();
-	public List<NumberedValue> errors = new ArrayList<>();
+	@Nonnull private final Map<String, Log4j1Logger> loggers = new LinkedHashMap<>();
+	@Nonnull private final Map<String, Log4j1Appender> appenders = new LinkedHashMap<>();
+	@Nonnull public final Log4j1RootLogger rootLogger = new Log4j1RootLogger();
+	@Nonnull public final List<NumberedValue> comments = new ArrayList<>();
+	@Nonnull public final List<NumberedValue> errors = new ArrayList<>();
 
+	@Nonnull
 	public Map<String, Log4j1Logger> getLoggers() {
 		return loggers;
 	}
 
+	@Nonnull
 	public Map<String, Log4j1Appender> getAppenders() {
 		return appenders;
 	}
 
 	public Log4j1Logger getOrCreateLogger(String name, int lineNumber) {
 		if (!loggers.containsKey(name)) {
-			Log4j1Logger logger = new Log4j1Logger();
-			logger.name = new NumberedValue(name, lineNumber);
-			loggers.put(name, logger);
+			loggers.put(name, new Log4j1Logger(new NumberedValue(name, lineNumber)));
 		}
 		return loggers.get(name);
 	}
 
 	public Log4j1Appender getOrCreateAppender(String name, int lineNumber) {
 		if (!appenders.containsKey(name)) {
-			Log4j1Appender appender = new Log4j1Appender();
-			appender.name = new NumberedValue(name, lineNumber);
-			appenders.put(name, appender);
+			appenders.put(name, new Log4j1Appender(new NumberedValue(name, lineNumber)));
 		}
 		return appenders.get(name);
 	}

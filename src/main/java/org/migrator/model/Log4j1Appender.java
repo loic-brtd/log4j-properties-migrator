@@ -1,18 +1,26 @@
 package org.migrator.model;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class Log4j1Appender extends Log4j1Element {
-	public NumberedValue name;
-	public NumberedValue typeClass;
-	public NumberedValue file;
-	public NumberedValue layout;
-	public NumberedValue layoutConversionPattern;
-	public NumberedValue maxFileSize;
-	public NumberedValue maxBackupIndex;
-	public NumberedValue threshold;
-	public NumberedValue datePattern;
-	public NumberedValue append;
-	public NumberedValue target;
-	public NumberedValue encoding;
+
+	@Nonnull public final NumberedValue name;
+	@Nullable public NumberedValue typeClass;
+	@Nullable public NumberedValue file;
+	@Nullable public NumberedValue layout;
+	@Nullable public NumberedValue layoutConversionPattern;
+	@Nullable public NumberedValue maxFileSize;
+	@Nullable public NumberedValue maxBackupIndex;
+	@Nullable public NumberedValue threshold;
+	@Nullable public NumberedValue datePattern;
+	@Nullable public NumberedValue append;
+	@Nullable public NumberedValue target;
+	@Nullable public NumberedValue encoding;
+
+	public Log4j1Appender(@Nonnull NumberedValue name) {
+		this.name = name;
+	}
 
 	@Override
 	public String toString() {

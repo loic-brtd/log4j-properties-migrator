@@ -8,8 +8,17 @@
 	<name>log4j properties migrator</name>
 
 	<properties>
-		<java.version>1.8</java.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.google.code.findbugs</groupId>
+			<artifactId>jsr305</artifactId>
+			<version>3.0.2</version>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<plugins>
@@ -25,14 +34,6 @@
 							<mainClass>org.migrator.Main</mainClass>
 						</manifest>
 					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.3</version>
-				<configuration>
-					<target>${java.version}</target>
-					<source>${java.version}</source>
 				</configuration>
 			</plugin>
 		</plugins>

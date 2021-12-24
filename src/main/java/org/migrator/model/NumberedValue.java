@@ -1,15 +1,19 @@
 package org.migrator.model;
 
+import javax.annotation.Nonnull;
+
 public class NumberedValue {
 
+	@Nonnull
 	public final String value;
 	public final int lineNumber;
 
-	public NumberedValue(String value, int lineNumber) {
+	public NumberedValue(@Nonnull String value, int lineNumber) {
 		this.value = value;
 		this.lineNumber = lineNumber;
 	}
 
+	@Nonnull
 	public String getValue() {
 		return value;
 	}

@@ -1,11 +1,14 @@
 package org.migrator.model;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Log4j1RootLogger extends Log4j1Element {
-	public NumberedValue level;
-	public List<NumberedValue> appenderNames = new ArrayList<>();
+
+	@Nonnull public final List<NumberedValue> appenderNames = new ArrayList<>();
+	@Nullable public NumberedValue level;
 
 	@Override
 	public String toString() {

@@ -13,7 +13,7 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 		if (args.length != 2) {
-			System.err.println("Usage: java -jar migrator.jar slf4j1.properties slf4j2.properties");
+			System.err.println("Usage: java -jar migrator.jar slf4j.properties slf4j2.properties");
 			System.exit(1);
 		}
 
@@ -23,7 +23,7 @@ public class Main {
 		List<String> lines = Util.readLines(inputPath);
 
 		Log4j1Properties log4j1Props = PropsParser.parseLog4j1Properties(lines);
-		List<String> log4j2Props = PropsWriter.writeLog4j2Properties(log4j1Props, lines);
+		List<String> log4j2Props = PropsWriter.writeLog4j2Properties(log4j1Props);
 
 		Util.writeLines(log4j2Props, outputPath);
 	}
