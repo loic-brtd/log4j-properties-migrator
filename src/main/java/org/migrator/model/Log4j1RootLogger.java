@@ -12,9 +12,10 @@ public class Log4j1RootLogger extends Log4j1Element {
 
 	@Override
 	public String toString() {
-		return "Log4j1RootLogger:"
-				+ "\n  level: " + level
-				+ "\n  appenderNames: " + appenderNames;
+		return "Log4j1RootLogger ("
+				+ "level: " + level
+				+ ", appenderNames: " + appenderNames
+				+ ")";
 	}
 
 }

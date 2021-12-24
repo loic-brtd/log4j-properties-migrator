@@ -24,19 +24,20 @@ public class Log4j1Appender extends Log4j1Element {
 
 	@Override
 	public String toString() {
-		return "Log4j1Appender:"
-				+ "\n  name: " + name
-				+ "\n  typeClass: " + typeClass
-				+ "\n  file: " + file
-				+ "\n  layout: " + layout
-				+ "\n  layoutConversionPattern: " + layoutConversionPattern
-				+ "\n  maxFileSize: " + maxFileSize
-				+ "\n  maxBackupIndex: " + maxBackupIndex
-				+ "\n  threshold: " + threshold
-				+ "\n  datePattern: " + datePattern
-				+ "\n  append: " + append
-				+ "\n  target: " + target
-				+ "\n  encoding: " + encoding;
+		return "Log4j1Appender ("
+				+ "name: " + name
+				+ ", typeClass: " + typeClass
+				+ ", file: " + file
+				+ ", layout: " + layout
+				+ ", layoutConversionPattern: " + layoutConversionPattern
+				+ ", maxFileSize: " + maxFileSize
+				+ ", maxBackupIndex: " + maxBackupIndex
+				+ ", threshold: " + threshold
+				+ ", datePattern: " + datePattern
+				+ ", append: " + append
+				+ ", target: " + target
+				+ ", encoding: " + encoding
+				+ ")";
 	}
 
 }

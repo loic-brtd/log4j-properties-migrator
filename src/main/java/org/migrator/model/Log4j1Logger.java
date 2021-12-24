@@ -18,11 +18,12 @@ public class Log4j1Logger extends Log4j1Element {
 
 	@Override
 	public String toString() {
-		return "Log4j1Logger:"
-				+ "\n  name: " + name
-				+ "\n  level: " + level
-				+ "\n  additivity: " + additivity
-				+ "\n  appenderNames: " + appenderNames;
+		return "Log4j1Logger ("
+				+ "name: " + name
+				+ ", level: " + level
+				+ ", additivity: " + additivity
+				+ ", appenderNames: " + appenderNames
+				+ ")";
 	}
 
 }

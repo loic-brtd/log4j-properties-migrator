@@ -9,5 +9,5 @@ mvn install -DskipTests
 ## Execute migrator
 
 ```
-java -jar target/migrator-0.0.1-SNAPSHOT.jar ./path/to/log4j.properties ./path/to/log4j2.properties
+java -jar target/migrator.jar ./path/to/log4j.properties ./path/to/log4j2.properties
 ```
