@@ -62,6 +62,7 @@ public class PropsWriter {
 		// Appenders
 		properties.getAppenders().forEach((appenderName, appender) -> {
 			String prefix = "appender." + nameToIdf(appenderName);
+			boolean alreadyAddedPoliciesType = false;
 
 			// Type
 			if (appender.typeClass == null) {
@@ -94,6 +95,7 @@ public class PropsWriter {
 						output.add(new NumberedValue(prefix + ".filePattern = " + appender.file.value + dateSuffix,
 								appender.file.lineNumber));
 						output.add(new NumberedValue(prefix + ".policies.type = Policies", appender.datePattern.lineNumber));
+						alreadyAddedPoliciesType = true;
 						output.add(new NumberedValue(prefix + ".policies.time.type = TimeBasedTriggeringPolicy",
 								appender.datePattern.lineNumber));
 						output.add(new NumberedValue(prefix + ".policies.time.interval = 1", appender.datePattern.lineNumber));
@@ -136,7 +138,9 @@ public class PropsWriter {
 
 			// Max file size
 			if (appender.maxFileSize != null) {
-				output.add(new NumberedValue(prefix + ".policies.type = Policies", appender.maxFileSize.lineNumber));
+				if (!alreadyAddedPoliciesType) {
+					output.add(new NumberedValue(prefix + ".policies.type = Policies", appender.maxFileSize.lineNumber));
+				}
 				output.add(new NumberedValue(prefix + ".policies.size.type = SizeBasedTriggeringPolicy",
 						appender.maxFileSize.lineNumber));
 				output.add(new NumberedValue(prefix + ".policies.size.size = " + appender.maxFileSize.value,
