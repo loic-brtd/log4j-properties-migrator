@@ -12,13 +12,15 @@ import org.migrator.model.Log4j1Properties;
 public class Main {
 
 	public static void main(String[] args) throws Exception {
-		if (args.length != 2) {
-			System.err.println("Usage: java -jar migrator.jar slf4j.properties slf4j2.properties");
+		if (args.length < 1) {
+			System.err.println("Usage: java -jar migrator.jar log4j.properties [log4j2.properties]");
 			System.exit(1);
 		}
 
 		Path inputPath = new File(args[0]).toPath();
-		Path outputPath = new File(args[1]).toPath();
+		Path outputPath = args.length == 2
+				? new File(args[1]).toPath()
+				: inputPath.getParent().resolve("log4j2.properties");
 
 		List<String> lines = Util.readLines(inputPath);
 
