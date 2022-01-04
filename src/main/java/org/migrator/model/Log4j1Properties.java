@@ -1,10 +1,11 @@
 package org.migrator.model;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nonnull;
 
 public class Log4j1Properties {
 
@@ -25,17 +26,11 @@ public class Log4j1Properties {
 	}
 
 	public Log4j1Logger getOrCreateLogger(String name, int lineNumber) {
-		if (!loggers.containsKey(name)) {
-			loggers.put(name, new Log4j1Logger(new NumberedValue(name, lineNumber)));
-		}
-		return loggers.get(name);
+		return loggers.computeIfAbsent(name, key -> new Log4j1Logger(new NumberedValue(name, lineNumber)));
 	}
 
 	public Log4j1Appender getOrCreateAppender(String name, int lineNumber) {
-		if (!appenders.containsKey(name)) {
-			appenders.put(name, new Log4j1Appender(new NumberedValue(name, lineNumber)));
-		}
-		return appenders.get(name);
+		return appenders.computeIfAbsent(name, key -> new Log4j1Appender(new NumberedValue(name, lineNumber)));
 	}
 
 	@Override

@@ -1,17 +1,18 @@
 package org.migrator.core;
 
-import org.migrator.model.Log4j1Appender;
-import org.migrator.model.Log4j1Properties;
-import org.migrator.model.Log4j1RootLogger;
-import org.migrator.model.NumberedValue;
+import static java.lang.String.format;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.lang.String.format;
+import javax.annotation.Nullable;
+
+import org.migrator.model.Log4j1Appender;
+import org.migrator.model.Log4j1Properties;
+import org.migrator.model.Log4j1RootLogger;
+import org.migrator.model.NumberedValue;
 
 public class PropsWriter {
 
@@ -79,8 +80,9 @@ public class PropsWriter {
 					if (appender.file == null) {
 						reportMissingAppenderProperty("file", appender, properties);
 					} else {
-						output.add(new NumberedValue(prefix + ".fileName = " + appender.file.value, appender.file.lineNumber));
-						output.add(new NumberedValue(prefix + ".filePattern = " + appender.file.value + ".%i",
+						String filePath = migrateSystemLookupFromV1toV2(appender.file.value);
+						output.add(new NumberedValue(prefix + ".fileName = " + filePath, appender.file.lineNumber));
+						output.add(new NumberedValue(prefix + ".filePattern = " + filePath + ".%i",
 								appender.file.lineNumber));
 					}
 					break;
@@ -90,9 +92,10 @@ public class PropsWriter {
 					} else if (appender.datePattern == null) {
 						reportMissingAppenderProperty("datePattern", appender, properties);
 					} else {
-						output.add(new NumberedValue(prefix + ".fileName = " + appender.file.value, appender.file.lineNumber));
+						String filePath = migrateSystemLookupFromV1toV2(appender.file.value);
+						output.add(new NumberedValue(prefix + ".fileName = " + filePath, appender.file.lineNumber));
 						String dateSuffix = ".%d{" + appender.datePattern.value.replace("'.'", "") + "}";
-						output.add(new NumberedValue(prefix + ".filePattern = " + appender.file.value + dateSuffix,
+						output.add(new NumberedValue(prefix + ".filePattern = " + filePath + dateSuffix,
 								appender.file.lineNumber));
 						output.add(new NumberedValue(prefix + ".policies.type = Policies", appender.datePattern.lineNumber));
 						alreadyAddedPoliciesType = true;
@@ -105,7 +108,8 @@ public class PropsWriter {
 					if (appender.file == null) {
 						reportMissingAppenderProperty("file", appender, properties);
 					} else {
-						output.add(new NumberedValue(prefix + ".fileName = " + appender.file.value, appender.file.lineNumber));
+						String filePath = migrateSystemLookupFromV1toV2(appender.file.value);
+						output.add(new NumberedValue(prefix + ".fileName = " + filePath, appender.file.lineNumber));
 					}
 					break;
 				}
@@ -218,6 +222,11 @@ public class PropsWriter {
 			Util.logError("Unknown appender type: " + classType, lineNumber);
 			return format("[%s] Unknown appender type: %s", Util.ERROR_NAME, classType);
 		}
+	}
+
+	private static String migrateSystemLookupFromV1toV2(String s) {
+		// Replaces ${catalina.base} by ${sys:catalina.base}
+		return s.replaceAll("\\$\\{([^:]*)\\}", "\\${sys:$1}");
 	}
 
 	/*
